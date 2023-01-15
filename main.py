@@ -2,12 +2,12 @@ import praw
 import creds
 import logging
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, JobQueue
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 import random
 
 user_list = []
 
-#credentials
+#credentials - kindly replace these with your own keys to run the bot on your local machine.
 client_id = creds.client_id
 client_secret = creds.client_secret
 user_agent = creds.user_agent
