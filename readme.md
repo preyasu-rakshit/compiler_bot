@@ -10,6 +10,7 @@ This bot scrapes the wholesome subreddits like r/aww, r/eyebleach, r/get_motivat
 4) enjoy
 
 A few sample screenshots:
-(screenshots/1.jpeg)
-(screenshots/2.jpeg)
-(screenshots/3.jpeg)
+
+<img src='/screenshots/1.jpeg'>
+<img src='/screenshots/2.jpeg'>
+<img src='/screenshots/3.jpeg'>
