@@ -1,6 +1,6 @@
 # A telegram bot that tries to make your day just a little better.
 
-This bot scrapes the wholesome subreddits like r/aww, r/eyebleach, r/get_motivated and sends the top posts straight to your telegram inbox, periodically.
+This bot scrapes the wholesome subreddits like r/aww, r/eyebleach, r/get_motivated and sends the top posts straight to your telegram inbox on your demand.
 
 ### How to run?
 
@@ -10,4 +10,5 @@ This bot scrapes the wholesome subreddits like r/aww, r/eyebleach, r/get_motivat
 4) enjoy
 
 A few sample screenshots:
+
 
