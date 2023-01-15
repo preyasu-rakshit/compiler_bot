@@ -1,11 +1,11 @@
 import praw
 import creds
-import requests
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, JobQueue
 import random
 
+user_list = []
 
 #credentials
 client_id = creds.client_id
@@ -13,24 +13,12 @@ client_secret = creds.client_secret
 user_agent = creds.user_agent
 username = creds.username
 password = creds.password
+token = creds.tele_key
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
-
-
-def download_posts(list_of_posts):
-    '''Give list of posts to be downloaded'''
-    name = 0
-    for i in list_of_posts:
-        ext = i.url.split('.')[-1]
-        post = requests.get(i.url)
-        print(ext)
-        with open(f'fetched_media/{name}.{ext}', 'wb+') as file:
-            file.write(post.content)
-        name += 1
-        print(i.url)
 
 
 def sort_posts(raw):
@@ -45,31 +33,48 @@ def update_posts():
     global posts
     #initialising a praw instance
     reddit = praw.Reddit(client_id= client_id, client_secret= client_secret, user_agent= user_agent, username= username, password= password)
-    sub = input("Enter the Subreddit you want to scrape: ")
-    subred = reddit.subreddit(sub)
-    unsorted_posts = subred.top(limit= 10, time_filter='day')
-    posts = sort_posts(unsorted_posts)
-
-async def test(a):
-    print('jjj')
+    posts = []
+    subs = ['aww', 'getmotivated', 'eyebleach']
+    for sub in subs:
+        subred = reddit.subreddit(sub)
+        unsorted_posts = subred.top(limit= 50, time_filter='week')
+        p = sort_posts(unsorted_posts)
+        posts += p
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_photo(context._chat_id, random.choice(posts).url)
+    global user_list
+    if str(context._chat_id) not in user_list:
+        user_list.append(str(context._chat_id))
+        message = 'Hii, I will brighten up your day, one cute pic / motivational quote at a time :). Use /send whenever you need some positivity in your life :)'
+        photo = random.choice(posts).url
+        await context.bot.send_photo(context._chat_id,photo, message)
+    
+    else:
+        await context.bot.send_message(context._chat_id, 'use /send')
+
+async def send_posts(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    post = random.choice(posts)
+    message = post.title
+    photo = post.url
+    await context.bot.send_photo(context._chat_id,photo, message)
 
 
 def main():
-    # update_posts()
-    application = ApplicationBuilder().token('5938253500:AAG48XzepJzhAxue4jZ796jw3WI7kDSwg6g').build()
-    application.job_queue.run_repeating(test, 1)
+    global users
+    update_posts()
+
+    application = ApplicationBuilder().token(token).build()
+    application.job_queue.run_repeating(update_posts, 60*60*24*7)
     
     start_handler = CommandHandler('start', start)
+    send_handler = CommandHandler('send', send_posts)
     application.add_handler(start_handler)
-    
+    application.add_handler(send_handler)
 
     application.run_polling()
     
 
 
 if __name__ == "__main__":
-    main()  
+    main()
